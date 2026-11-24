@@ -20,10 +20,19 @@ A Lean-checked proof with only `propext`, `Classical.choice`, `Quot.sound` can o
 6. **Low treewidth.** A path network has a balanced cut crossed by one wire and has small circuits; the paper handles this explicitly (Figure 3, complete network vs path). So the "dense graph" requirement is used.
 7. **Determinant and characteristic 2.** The proof must fail for the determinant; the paper locates the failure in the reduction of clause sums to the permanent (arrows P). In characteristic 2 only `hc` is claimed (`p != 2 ->` guard in the statement). Consistent.
 
+## Follow-up: the transfer lemmas (read, no flaw)
+
+`Paper/Transfer.lean` (`lem_transfer`, `lem_transfer_approx`; paper Lemma M.1 and N.2) pass from a circuit over an arbitrary field `F : Type u` of characteristic `p` to one over an algebraically closed field `KK : Type` of the same characteristic, for polynomials with integer coefficients.
+
+- Argument: a common ring `T` receives `F` and `KK` (`exists_common_ring`); the finitely many constants of the circuit generate a finitely generated subalgebra `A`; a specialisation `psi : A -> KK` exists by the Nullstellensatz (`exists_specialisation`); circuits are mapped along ring homomorphisms (`Computes.map`), and the lifted circuit computes `q` over `A` because the integer polynomial `q` is fixed by every ring homomorphism (`Subsingleton.elim` on maps from `Int`).
+- Size is preserved (`S` gates in, `S` gates out), the field `F` may lie in any universe, and `KK` only has to be algebraically closed with `CharP KK p`. Nothing is lost for `p` not prime or zero (then no field exists).
+- Approximate version: constants are cut off to Laurent polynomials in `eps`, the same specialisation is applied coefficientwise, and the conditions on `coeff d P` for `i <= 0` are transported by `coeff_mapRingHom`. The cut-off bound in the paper uses `2^L` (degree of a gate in the constants), which is the correct growth for repeated squaring.
+
+Conclusion: this bridge is sound as read. It was the main suspected gap and it is not one.
+
 ## What was not checked
 
 - The 73,000 lines of proof themselves, beyond the searches above.
-- `lem_transfer` and `lem_transfer_approx` (passing from an arbitrary field `F : Type u` to an algebraically closed field of the same characteristic in universe 0). Mathematically this is a specialization of the finitely many circuit constants; this is the most delicate bridge and the first thing to read.
 - Remark N.6 (determinantal complexity) is not formalized upstream.
 - Barriers (relativization, algebrization, natural proofs): the paper itself says they were not analysed. The contracting case ends in a diagonal argument.
 - Practical content: the constant is `c = 1/1600^2` and `m0` is not effective, so the bound is asymptotic only.
