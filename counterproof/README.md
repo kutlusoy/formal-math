@@ -34,7 +34,7 @@ From `vp-vnp/` in a checkout with elan installed:
 
     lake exe cache get
     lake build
-    cp ../vp-vnp-gegenbeweis/Audit.lean scripts/Audit.lean
+    cp ../counterproof/Audit.lean scripts/Audit.lean
     lake env lean scripts/Audit.lean
 
 Any error or any axiom other than `propext`, `Classical.choice`, `Quot.sound` is a lead for a real counterproof.
